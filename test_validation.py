@@ -121,7 +121,7 @@ def _is_submission_successful(driver, timeout=5):
 def _get_modal_data(driver):
     """
     Extract submitted data from the success modal table.
-    Returns a dict like {"Student Name": "John Doe", "Student Email": "...", ...}
+    Returns a dict like {"Student Name": "Kathirselvan", "Student Email": "skathirselvan12@gmail.com", ...}
     """
     data = {}
     try:
