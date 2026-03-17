@@ -1,0 +1,14 @@
+[project]
+name = "automated-form-filler"
+version = "1.0.0"
+description = "Beginner-friendly Selenium automation script that fills and submits web forms on demoqa.com"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pytest>=9.0.2",
+    "selenium>=4.41.0",
+    "webdriver-manager>=4.0.2",
+]
+
+[project.scripts]
+form-filler = "main:run_automation"
