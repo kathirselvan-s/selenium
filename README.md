@@ -1,75 +1,61 @@
 # 🤖 Automated Form Filler
 
-A beginner-friendly Python application that uses **Selenium WebDriver** to automatically fill and submit web forms on [demoqa.com](https://demoqa.com/automation-practice-form).
+A professional Python application that uses **Selenium WebDriver** to automatically fill and submit web forms on [demoqa.com](https://demoqa.com/automation-practice-form).
 
-Built with modern tooling using **UV** (Astral's ultra-fast Python package manager).
+Built with modern tooling using **UV** (Astral's ultra-fast Python package manager), this project demonstrates robust automation patterns, including custom element handling, automatic browser detection, and ethical scraping practices.
 
 ---
 
 ## ✨ Features
 
-- **Fills all field types:** text inputs, radio buttons, checkboxes, dropdowns, date pickers, autocomplete
-- **Submits the form** and verifies the success confirmation modal
-- **Automated validation tests** with pytest (positive + negative + field validation)
-- **Ethical CAPTCHA handling** — only uses demo sites, never bypasses real CAPTCHAs
-- **Screenshot capture** after submission
-- **Clean virtual environment** — no global package pollution
+- **Multi-Browser Support:** Auto-detects and uses Google Chrome or Microsoft Edge.
+- **Complex Field Handling:** Automates text inputs, radio buttons, checkboxes, custom React-select dropdowns, date pickers, and autocomplete fields.
+- **Robust Interactions:** Implements smooth scrolling and explicit waits to ensure elements are interactable.
+- **Success Verification:** Automatically parses the post-submission modal to verify data integrity.
+- **Automated Validation:** Comprehensive test suite with positive, negative, and edge-case scenarios.
+- **Screenshot Capture:** Saves visual proof of successful submissions or error states.
+- **Ethical Design:** Includes built-in guidelines and placeholders for responsible automation.
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 automated-form-filler/
-├── .venv/                      # Auto-created by UV
-├── pyproject.toml              # Defines project + dependencies
-├── uv.lock                    # Auto-generated lock file
-├── main.py                     # Main automation script
-├── test_validation.py          # pytest validation tests
-├── config.py                   # Form data (name, email, etc.)
-├── README.md                   # This file
-└── screenshots/                # Saved screenshots (auto-created)
+├── .venv/                      # Auto-managed virtual environment
+├── config.py                   # Form data configuration (name, email, etc.)
+├── main.py                     # Primary automation engine
+├── test_validation.py          # Pytest-based validation suite
+├── pyproject.toml              # Project metadata & dependencies
+├── uv.lock                    # Deterministic dependency lock file
+├── screenshots/                # Automated capture storage
+└── README.md                   # Project documentation
 ```
 
 ---
 
-## 🚀 Quick Start (UV — Recommended)
+## 🚀 Quick Start (Recommended)
 
 ### Prerequisites
 
-- **Python 3.10+** installed
-- **Google Chrome** browser installed
-- **UV** package manager ([install guide](https://docs.astral.sh/uv/getting-started/installation/))
+- **Python 3.10+**
+- **Google Chrome** or **Microsoft Edge**
+- **UV** package manager ([Installation Guide](https://docs.astral.sh/uv/getting-started/installation/))
 
-### 1. Install UV (one-time only)
-
-```bash
-# Windows
-winget install --id=astral-sh.uv
-
-# macOS
-brew install uv
-
-# Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-### 2. Install Dependencies
+### 1. Setup Environment
 
 ```bash
-# Clone/download the project, then:
+# Clone the repository and sync dependencies
 uv sync
 ```
 
-This creates a `.venv` and installs all dependencies automatically.
-
-### 3. Run the Automation
+### 2. Run Automation
 
 ```bash
 uv run python main.py
 ```
 
-### 4. Run Validation Tests
+### 3. Run Tests
 
 ```bash
 uv run pytest test_validation.py -v
@@ -77,90 +63,58 @@ uv run pytest test_validation.py -v
 
 ---
 
-## 🔧 Alternative Setup (pip)
-
-If you prefer classic pip:
-
-```bash
-# Create virtual environment
-python -m venv .venv
-
-# Activate it
-# Windows:
-.venv\Scripts\activate
-# macOS/Linux:
-source .venv/bin/activate
-
-# Install dependencies
-pip install selenium webdriver-manager pytest
-
-# Run
-python main.py
-
-# Test
-pytest test_validation.py -v
-```
-
----
-
 ## ⚙️ Configuration
 
-Edit `config.py` to change the form data:
+The application is data-driven. Edit `config.py` to customize the submission data. Below is the current sample data configured in the project:
 
 ```python
-FIRST_NAME = "John"
-LAST_NAME = "Doe"
-EMAIL = "johndoe@example.com"
-MOBILE_NUMBER = "9876543210"
+# Personal Information
+FIRST_NAME = "Kathirselvan"
+LAST_NAME = "S"
+EMAIL = "skathirselvan12@gmail.com"
+MOBILE_NUMBER = "8667542949"
+
+# Form Selections
 GENDER = "Male"
-DOB_DAY = "15"
-DOB_MONTH = "June"
-DOB_YEAR = "1995"
-SUBJECTS = ["Maths", "Computer Science"]
-HOBBIES = ["Sports", "Reading"]
-CURRENT_ADDRESS = "123 Automation Street, Test City"
-STATE = "NCR"
-CITY = "Delhi"
+DOB_DAY = "08"
+DOB_MONTH = "September"
+DOB_YEAR = "2004"
+
+# Multi-select Fields
+SUBJECTS = ["Python", "Machine learning", "AL", "NLP", "Computer Science"]
+HOBBIES = ["Sports", "Reading", "Gaming"]
+
+# Address & Location
+CURRENT_ADDRESS = "5/113 B2, Thathipalayam, knour, namakkal - 637207"
+STATE = "Tamil Nadu"
+CITY = "Namakkal"
 ```
 
 ---
 
-## 🧪 Test Suite
-
-The test suite includes:
-
-| Category | Tests | Description |
-|----------|-------|-------------|
-| **Positive** | 3 tests | Valid data → successful submission |
-| **Negative** | 4 tests | Missing required fields → no submission |
-| **Validation** | 4 tests | Email format, mobile length, field behavior |
-| **CAPTCHA** | 1 test | Verifies no CAPTCHA is present |
-
----
-
-## ⚠️ Ethical Notice
-
-This project is for **EDUCATIONAL PURPOSES ONLY**.
-
-- ✅ Only use on demo/practice websites that explicitly allow automation
-- ❌ Never bypass CAPTCHAs or abuse real services
-- ❌ Never violate any website's Terms of Service
-- ❌ Never use for spamming or malicious purposes
-
----
-
-## 📋 Tech Stack
+## 🛠️ Tech Stack & Tools
 
 | Tool | Purpose |
 |------|---------|
-| Python 3.10+ | Programming language |
-| UV | Package & project manager |
-| Selenium | Browser automation |
-| webdriver-manager | Auto-downloads ChromeDriver |
-| pytest | Testing framework |
+| **Python 3.10+** | Core programming logic |
+| **UV** | High-performance dependency management |
+| **Selenium 4.20+** | Browser automation & DOM interaction |
+| **Selenium Manager** | Zero-config driver management (automatic) |
+| **Pytest** | Industrial-grade testing framework |
+
+---
+
+## ⚖️ Ethical Automation Guidelines
+
+This project strictly adheres to ethical automation practices:
+
+1. **Targeting:** Only used on dedicated practice/sandbox domains.
+2. **CAPTCHA:** No automated bypasses; follows "Human-in-the-loop" or "Sandbox-only" principles.
+3. **Resource Usage:** Implements throttled interactions to avoid overwhelming target servers.
+4. **Transparency:** Clearly identifies as an automated agent via user-agent or logging.
 
 ---
 
 ## 📄 License
 
-This project is for educational purposes. Use responsibly.
+Educational Use Only. Built with ❤️ for the Selenium community.

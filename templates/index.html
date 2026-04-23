@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AutoFill Pro — Google Form Automation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0f1a;--surface:#141626;--card:#1a1d30;--border:#2a2d45;
+  --accent:#6c63ff;--accent2:#ff6584;--green:#00d4aa;--yellow:#ffd166;
+  --text:#e8eaf0;--muted:#7b7f9e;--radius:14px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* Header */
+header{background:linear-gradient(135deg,#1a1d30 0%,#0d0f1a 100%);border-bottom:1px solid var(--border);padding:18px 32px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:grid;place-items:center;font-size:20px}
+header h1{font-size:1.25rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+header p{font-size:.78rem;color:var(--muted);margin-left:auto}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:800px){.container{grid-template-columns:1fr}}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.card-icon{font-size:1.2rem}
+.card-title{font-size:1rem;font-weight:600}
+.card-sub{font-size:.78rem;color:var(--muted);margin-top:2px}
+
+/* Form fields */
+.field-group{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.field-group.full{grid-template-columns:1fr}
+label{display:block;font-size:.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+input,textarea,select{width:100%;background:#0d0f1a;border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Inter',sans-serif;font-size:.88rem;padding:10px 13px;transition:border .2s,box-shadow .2s;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.15)}
+textarea{resize:vertical;min-height:70px}
+select option{background:var(--card)}
+
+/* Radio group */
+.radio-group{display:flex;gap:10px}
+.radio-opt{flex:1;background:#0d0f1a;border:1px solid var(--border);border-radius:8px;padding:9px 12px;cursor:pointer;text-align:center;font-size:.82rem;transition:all .2s}
+.radio-opt.active{border-color:var(--accent);background:rgba(108,99,255,.12);color:var(--accent);font-weight:600}
+.radio-opt:hover:not(.active){border-color:var(--muted)}
+
+/* Tags input */
+.tags-wrap{background:#0d0f1a;border:1px solid var(--border);border-radius:8px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;min-height:48px;cursor:text}
+.tags-wrap:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px rgba(108,99,255,.15)}
+.tag{background:rgba(108,99,255,.2);border:1px solid rgba(108,99,255,.4);border-radius:6px;padding:3px 10px;font-size:.78rem;display:flex;align-items:center;gap:6px;color:var(--accent)}
+.tag .remove{cursor:pointer;opacity:.7;font-size:.9rem;transition:opacity .2s}.tag .remove:hover{opacity:1}
+.tag-input{border:none;background:transparent;outline:none;color:var(--text);font-size:.85rem;min-width:100px;flex:1;font-family:'Inter',sans-serif;padding:2px 4px}
+
+/* Hobby checkboxes */
+.hobby-group{display:flex;gap:10px;flex-wrap:wrap}
+.hobby-chip{padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:#0d0f1a;cursor:pointer;font-size:.82rem;transition:all .2s;user-select:none}
+.hobby-chip.active{border-color:var(--green);background:rgba(0,212,170,.12);color:var(--green);font-weight:600}
+.hobby-chip:hover:not(.active){border-color:var(--muted)}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:9px;font-size:.88rem;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'Inter',sans-serif}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;width:100%;justify-content:center;font-size:.95rem;padding:13px}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(108,99,255,.35)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-save{background:rgba(0,212,170,.12);color:var(--green);border:1px solid rgba(0,212,170,.3);margin-bottom:12px;width:100%;justify-content:center}
+.btn-save:hover{background:rgba(0,212,170,.2)}
+
+/* URL section */
+.url-card{grid-column:1/-1;background:linear-gradient(135deg,rgba(108,99,255,.08),rgba(255,101,132,.05));border-color:rgba(108,99,255,.3)}
+.url-wrap{position:relative}
+.url-wrap input{padding-right:44px;font-size:.85rem}
+.url-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:1rem;pointer-events:none}
+
+/* Console */
+.console-card{grid-column:1/-1}
+.console{background:#080a12;border:1px solid #1e2038;border-radius:10px;padding:16px;height:280px;overflow-y:auto;font-family:'Courier New',monospace;font-size:.8rem;line-height:1.7}
+.console::-webkit-scrollbar{width:6px}.console::-webkit-scrollbar-track{background:#0d0f1a}.console::-webkit-scrollbar-thumb{background:#2a2d45;border-radius:3px}
+.log-idle{color:var(--muted)}
+.log-info{color:#a0a8d0}
+.log-success{color:var(--green)}
+.log-error{color:var(--accent2)}
+.log-done{color:var(--yellow);font-weight:bold}
+
+/* Progress bar */
+.progress-bar{height:3px;background:var(--border);border-radius:2px;margin-bottom:14px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:2px;transition:width .4s}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 18px;font-size:.85rem;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.4);transform:translateY(80px);opacity:0;transition:all .3s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{border-color:var(--green);color:var(--green)}
+.toast.error{border-color:var(--accent2);color:var(--accent2)}
+
+/* Divider */
+.section-divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🤖</div>
+  <div>
+    <h1>AutoFill Pro</h1>
+    <p>Selenium Form Automation</p>
+  </div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--muted)">
+    <div class="status-dot"></div> Ready
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- URL Card -->
+  <div class="card url-card">
+    <div class="card-header">
+      <span class="card-icon">🔗</span>
+      <div>
+        <div class="card-title">Target Form URL</div>
+        <div class="card-sub">Paste the Google Form or practice form link to auto-fill</div>
+      </div>
+    </div>
+    <div class="url-wrap">
+      <input id="form-url" type="url" placeholder="https://docs.google.com/forms/... or https://demoqa.com/automation-practice-form"/>
+      <span class="url-icon">🌐</span>
+    </div>
+  </div>
+
+  <!-- Personal Info -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">👤</span>
+      <div>
+        <div class="card-title">Personal Information</div>
+        <div class="card-sub">Basic identity details for the form</div>
+      </div>
+    </div>
+    <div class="field-group">
+      <div><label>First Name</label><input id="first-name" placeholder="Kathirselvan"/></div>
+      <div><label>Last Name</label><input id="last-name" placeholder="S"/></div>
+    </div>
+    <div class="field-group full">
+      <div><label>Email Address</label><input id="email" type="email" placeholder="you@example.com"/></div>
+    </div>
+    <div class="field-group full">
+      <div><label>Mobile Number (10 digits)</label><input id="mobile" type="tel" placeholder="9876543210" maxlength="10"/></div>
+    </div>
+    <hr class="section-divider"/>
+    <div>
+      <label>Gender</label>
+      <div class="radio-group">
+        <div class="radio-opt" data-val="Male" onclick="selectGender(this)">♂ Male</div>
+        <div class="radio-opt" data-val="Female" onclick="selectGender(this)">♀ Female</div>
+        <div class="radio-opt" data-val="Other" onclick="selectGender(this)">⚧ Other</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOB + Extra -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📋</span>
+      <div>
+        <div class="card-title">Additional Details</div>
+        <div class="card-sub">DOB, subjects, hobbies &amp; location</div>
+      </div>
+    </div>
+    <label>Date of Birth</label>
+    <div class="field-group" style="margin-bottom:16px">
+      <div><input id="dob-day" placeholder="Day (08)" maxlength="2"/></div>
+      <div>
+        <select id="dob-month">
+          <option value="">Month</option>
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-group full" style="margin-bottom:16px">
+      <div><label>Year</label><input id="dob-year" placeholder="2004" maxlength="4"/></div>
+    </div>
+    <label>Subjects <span style="color:var(--muted);font-weight:400">(press Enter to add)</span></label>
+    <div class="tags-wrap" id="subjects-wrap" onclick="document.getElementById('subj-input').focus()">
+      <input class="tag-input" id="subj-input" placeholder="Type subject..." onkeydown="addTag(event,'subjects')"/>
+    </div>
+    <br/>
+    <label>Hobbies</label>
+    <div class="hobby-group" id="hobbies-wrap">
+      <div class="hobby-chip" data-val="Sports" onclick="toggleHobby(this)">🏅 Sports</div>
+      <div class="hobby-chip" data-val="Reading" onclick="toggleHobby(this)">📚 Reading</div>
+      <div class="hobby-chip" data-val="Music" onclick="toggleHobby(this)">🎵 Music</div>
+    </div>
+    <hr class="section-divider"/>
+    <div class="field-group full">
+      <div><label>Current Address</label><textarea id="address" placeholder="Your current address..."></textarea></div>
+    </div>
+    <div class="field-group">
+      <div><label>State</label><input id="state" placeholder="Tamil Nadu"/></div>
+      <div><label>City</label><input id="city" placeholder="Chennai"/></div>
+    </div>
+  </div>
+
+  <!-- Console -->
+  <div class="card console-card">
+    <div class="card-header">
+      <span class="card-icon">⚡</span>
+      <div>
+        <div class="card-title">Automation Console</div>
+        <div class="card-sub">Live logs from the Selenium runner</div>
+      </div>
+      <button class="btn" onclick="clearConsole()" style="margin-left:auto;background:rgba(255,255,255,.05);color:var(--muted);padding:6px 12px;font-size:.75rem">🗑 Clear</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="console" id="console">
+      <div class="log-idle">▶ Configure your form details above, then click Run Automation...</div>
+    </div>
+    <br/>
+    <button class="btn btn-save" onclick="saveConfig()">💾 Save Configuration</button>
+    <button class="btn btn-primary" id="run-btn" onclick="runAutomation()">🚀 Run Automation</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// State
+let subjects = [];
+let selectedGender = 'Male';
+let selectedHobbies = [];
+
+// ── Load Config ──────────────────────────────────────────────────────────────
+async function loadConfig() {
+  try {
+    const r = await fetch('/api/config');
+    const d = await r.json();
+    if (!d.success) return;
+    const c = d.config;
+    document.getElementById('form-url').value = c.FORM_URL || '';
+    document.getElementById('first-name').value = c.FIRST_NAME || '';
+    document.getElementById('last-name').value = c.LAST_NAME || '';
+    document.getElementById('email').value = c.EMAIL || '';
+    document.getElementById('mobile').value = c.MOBILE_NUMBER || '';
+    document.getElementById('dob-day').value = c.DOB_DAY || '';
+    document.getElementById('dob-year').value = c.DOB_YEAR || '';
+    document.getElementById('address').value = c.CURRENT_ADDRESS || '';
+    document.getElementById('state').value = c.STATE || '';
+    document.getElementById('city').value = c.CITY || '';
+
+    const monthSel = document.getElementById('dob-month');
+    for (let o of monthSel.options) if (o.value === c.DOB_MONTH) o.selected = true;
+
+    selectedGender = c.GENDER || 'Male';
+    document.querySelectorAll('.radio-opt').forEach(el => {
+      el.classList.toggle('active', el.dataset.val === selectedGender);
+    });
+
+    subjects = c.SUBJECTS || [];
+    renderTags();
+
+    selectedHobbies = c.HOBBIES || [];
+    document.querySelectorAll('.hobby-chip').forEach(el => {
+      el.classList.toggle('active', selectedHobbies.includes(el.dataset.val));
+    });
+  } catch(e) { console.error(e); }
+}
+
+// ── Tag system (Subjects) ────────────────────────────────────────────────────
+function renderTags() {
+  const wrap = document.getElementById('subjects-wrap');
+  const input = document.getElementById('subj-input');
+  wrap.innerHTML = '';
+  subjects.forEach((s, i) => {
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.innerHTML = `${s} <span class="remove" onclick="removeTag(${i})">×</span>`;
+    wrap.appendChild(tag);
+  });
+  wrap.appendChild(input);
+}
+function addTag(e, type) {
+  if (e.key !== 'Enter' && e.key !== ',') return;
+  e.preventDefault();
+  const val = e.target.value.trim();
+  if (val && !subjects.includes(val)) { subjects.push(val); renderTags(); }
+  e.target.value = '';
+}
+function removeTag(i) { subjects.splice(i,1); renderTags(); }
+
+// ── Gender ───────────────────────────────────────────────────────────────────
+function selectGender(el) {
+  selectedGender = el.dataset.val;
+  document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── Hobbies ──────────────────────────────────────────────────────────────────
+function toggleHobby(el) {
+  const v = el.dataset.val;
+  if (selectedHobbies.includes(v)) {
+    selectedHobbies = selectedHobbies.filter(h => h !== v);
+    el.classList.remove('active');
+  } else {
+    selectedHobbies.push(v);
+    el.classList.add('active');
+  }
+}
+
+// ── Gather form data ─────────────────────────────────────────────────────────
+function gatherData() {
+  return {
+    FORM_URL: document.getElementById('form-url').value.trim(),
+    FIRST_NAME: document.getElementById('first-name').value.trim(),
+    LAST_NAME: document.getElementById('last-name').value.trim(),
+    EMAIL: document.getElementById('email').value.trim(),
+    MOBILE_NUMBER: document.getElementById('mobile').value.trim(),
+    GENDER: selectedGender,
+    DOB_DAY: document.getElementById('dob-day').value.trim(),
+    DOB_MONTH: document.getElementById('dob-month').value,
+    DOB_YEAR: document.getElementById('dob-year').value.trim(),
+    SUBJECTS: subjects,
+    HOBBIES: selectedHobbies,
+    CURRENT_ADDRESS: document.getElementById('address').value.trim(),
+    STATE: document.getElementById('state').value.trim(),
+    CITY: document.getElementById('city').value.trim(),
+    IMPLICIT_WAIT: 10,
+    PAGE_LOAD_TIMEOUT: 30,
+  };
+}
+
+// ── Save Config ───────────────────────────────────────────────────────────────
+async function saveConfig() {
+  try {
+    const r = await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(gatherData()) });
+    const d = await r.json();
+    showToast(d.success ? '✅ Configuration saved!' : '❌ ' + d.error, d.success ? 'success' : 'error');
+  } catch(e) { showToast('❌ Save failed: ' + e, 'error'); }
+}
+
+// ── Run Automation ────────────────────────────────────────────────────────────
+function runAutomation() {
+  const btn = document.getElementById('run-btn');
+  btn.disabled = true; btn.textContent = '⏳ Running...';
+  const cons = document.getElementById('console');
+  cons.innerHTML = '<div class="log-info">⚡ Starting automation...</div>';
+  setProgress(5);
+
+  const src = new EventSource('/api/run');
+  // POST data first via fetch, then stream
+  fetch('/api/run', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(gatherData()) })
+    .then(async res => {
+      // Read SSE from fetch response
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '';
+      let prog = 10;
+
+      const processLine = (line) => {
+        if (!line.startsWith('data: ')) return;
+        try {
+          const obj = JSON.parse(line.slice(6));
+          const {type, message} = obj;
+          if (type === 'end') return;
+          const div = document.createElement('div');
+          if (type === 'done') { div.className = 'log-done'; setProgress(100); }
+          else if (type === 'error') { div.className = 'log-error'; }
+          else { div.className = 'log-info'; prog = Math.min(prog + 5, 90); setProgress(prog); }
+          div.textContent = message;
+          cons.appendChild(div);
+          cons.scrollTop = cons.scrollHeight;
+          if (type === 'done' || type === 'error') {
+            btn.disabled = false; btn.textContent = '🚀 Run Automation';
+            showToast(type==='done'?'✅ Form filled successfully!':'❌ Automation failed', type==='done'?'success':'error');
+          }
+        } catch {}
+      };
+
+      while (true) {
+        const {done, value} = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, {stream:true});
+        const lines = buf.split('\n');
+        buf = lines.pop();
+        lines.forEach(processLine);
+      }
+      btn.disabled = false; btn.textContent = '🚀 Run Automation';
+    })
+    .catch(e => {
+      cons.innerHTML += `<div class="log-error">❌ Connection error: ${e}</div>`;
+      btn.disabled = false; btn.textContent = '🚀 Run Automation';
+    });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setProgress(pct) { document.getElementById('progress').style.width = pct + '%'; }
+function clearConsole() {
+  document.getElementById('console').innerHTML = '<div class="log-idle">▶ Console cleared. Ready.</div>';
+  setProgress(0);
+}
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Init
+loadConfig();
+</script>
+</body>
+</html>
